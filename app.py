@@ -1,27 +1,61 @@
 import sys,os
 
 # Function definition is here
+def gsa(Seq1,Seq2,Match,Mismatch,Gap): #Global Sequence Alignment
+    Score=[]
+    for i in range(0,(len(Seq1)+1)):
+        column = []
+        for j in range(0,(len(Seq2)+1)):
+            if(i == 0):
+                column.append(j*-1)
+            elif(j == 0):
+                column.append(i*-1)
+            else:
+                U = Score[i-1][j]+Gap
+                L = column[j-1]+Gap
+                if(Seq1[i-1] == Seq2[j-1]):
+                    UL = Score[i-1][j-1] + Match
+                else:
+                    UL = Score[i-1][j-1] + Mismatch
+                Choose = max(U,L,UL)
+                column.append(Choose)
+        Score.append(column)
+    return Score
 
-
+def lsa(Seq1,Seq2,Match,Mismatch,Gap): #Local Sequence Alignment
+    Score=[]
+    for i in range(0,(len(Seq1)+1)):
+        column = []
+        for j in range(0,(len(Seq2)+1)):
+            if(i == 0):
+                column.append(0)
+            elif(j == 0):
+                column.append(0)
+            else:
+                U = Score[i-1][j]+Gap
+                L = column[j-1]+Gap
+                if(Seq1[i-1] == Seq2[j-1]):
+                    UL = Score[i-1][j-1] + Match
+                else:
+                    UL = Score[i-1][j-1] + Mismatch
+                Choose = max(0,U,L,UL)
+                column.append(Choose)
+        Score.append(column)
+    return Score
 #============================= 
     
     
 def main(argv):
     
-    Seq1=[]
-    Seq2=[]
-    Match = 0
-    Mismatch = 0
-    Gap = 0
-    Mode = 'G'
-    
-    if (len(sys.argv) == 6):
+    Seq1 = ''
+    Seq2 = ''
+
+    if (len(sys.argv) == 7):
         FileName1 = sys.argv[1]
         if (os.path.exists('./' + FileName1)):
             fo = open(str(FileName1))    
             for row in fo:
-                if (row[0] != '>'):
-                    Seq1.append(row.replace('\n',''))
+                Seq1 += row.replace('\n','')
             fo.close()
         else:
             print("error: file 1",FileName1,"not found!\n")
@@ -31,35 +65,38 @@ def main(argv):
         if (os.path.exists('./' + FileName2)):
             fo = open(str(FileName2))       
             for row in fo:
-                if (row[0] != '>'):
-                    Seq2.append(row.replace('\n',''))
+                Seq2 += row.replace('\n','')
             fo.close()
         else:
             print("error: file 2",FileName2,"not found!\n")
             exit()
             
-        if (sys.argv[3].isnumeric()):
-            Match = sys.argv[3]
-        else:
-            print("error: Match must be numeric\n")
-            exit()
-        
-        if (sys.argv[4].isnumeric()):
-            Mismatch = sys.argv[4]
-        else:
+        try:
+            Match = int(sys.argv[3])
+        except ValueError:
             print("error: Match must be numeric\n")
             exit()
             
-        if (sys.argv[5].isnumeric()):
-            Gap = sys.argv[5]
-        else:
-            print("error: Match must be numeric\n")
+        try:
+            Mismatch = int(sys.argv[4])
+        except ValueError:
+            print("error: Mismatch must be numeric\n")
+            exit()
+            
+        try:
+            Gap = int(sys.argv[5])
+        except ValueError:
+            print("error: Gap must be numeric\n")
             exit()
             
         if (sys.argv[6].upper() == 'G'):
-            print("G\n")
+            Result = gsa(Seq1,Seq2,Match,Mismatch,Gap)
+            for i in range(0,len(Seq1)+1):
+                print(Result[i])
         elif (sys.argv[6].upper() == 'L'):
-            print("L\n")
+            Result = lsa(Seq1,Seq2,Match,Mismatch,Gap)
+            for i in range(0,len(Seq1)+1):
+                print(Result[i])
         else:
             print("error: Mode must be 'G' or 'L'\n")
             exit()
