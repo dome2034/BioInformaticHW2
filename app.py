@@ -2,46 +2,76 @@ import sys,os
 
 # Function definition is here
 def gsa(Seq1,Seq2,Match,Mismatch,Gap): #Global Sequence Alignment
-    Score=[]
+    row=[]
     for i in range(0,(len(Seq1)+1)):
         column = []
         for j in range(0,(len(Seq2)+1)):
             if(i == 0):
-                column.append(j*-1)
-            elif(j == 0):
-                column.append(i*-1)
-            else:
-                U = Score[i-1][j]+Gap
-                L = column[j-1]+Gap
-                if(Seq1[i-1] == Seq2[j-1]):
-                    UL = Score[i-1][j-1] + Match
+                if(j == 0):
+                    column.append([j*-1,[0,0,0]]) #[Value,[U,L,D]]
                 else:
-                    UL = Score[i-1][j-1] + Mismatch
-                Choose = max(U,L,UL)
-                column.append(Choose)
-        Score.append(column)
-    return Score
+                    column.append([j*-1,[0,1,0]]) #[Value,[U,L,D]]
+            elif(j == 0):
+                column.append([i*-1,[1,0,0]]) #[Value,[U,L,D]]
+            else:
+                U = row[i-1][j][0]+Gap
+                L = column[j-1][0]+Gap
+                if(Seq1[i-1] == Seq2[j-1]):
+                    D = row[i-1][j-1][0] + Match
+                else:
+                    D = row[i-1][j-1][0] + Mismatch
+                Choose = max(U,L,D)
+                if(Choose == U):
+                    U = 1
+                else:
+                    U = 0
+                if(Choose == L):
+                    L = 1
+                else:
+                    L = 0
+                if(Choose == D):
+                    D = 1
+                else:
+                    D = 0
+                column.append([Choose,[U,L,D]]) #[Value,[U,L,D]]
+        row.append(column)
+    return row
 
 def lsa(Seq1,Seq2,Match,Mismatch,Gap): #Local Sequence Alignment
-    Score=[]
+    row=[]
     for i in range(0,(len(Seq1)+1)):
         column = []
         for j in range(0,(len(Seq2)+1)):
             if(i == 0):
-                column.append(0)
+                column.append([0,[0,0,0]]) #[Value,[U,L,D]]
             elif(j == 0):
-                column.append(0)
+                column.append([0,[0,0,0]]) #[Value,[U,L,D]]
             else:
-                U = Score[i-1][j]+Gap
-                L = column[j-1]+Gap
+                U = row[i-1][j][0]+Gap
+                L = column[j-1][0]+Gap
                 if(Seq1[i-1] == Seq2[j-1]):
-                    UL = Score[i-1][j-1] + Match
+                    D = row[i-1][j-1][0] + Match
                 else:
-                    UL = Score[i-1][j-1] + Mismatch
-                Choose = max(0,U,L,UL)
-                column.append(Choose)
-        Score.append(column)
-    return Score
+                    D = row[i-1][j-1][0] + Mismatch
+                Choose = max(0,U,L,D)
+                if(Choose == 0):
+                    column.append([Choose,[0,0,0]]) #[Value,[U,L,D]]  
+                else:
+                    if(Choose == U):
+                        U = 1
+                    else:
+                        U = 0
+                    if(Choose == L):
+                        L = 1
+                    else:
+                        L = 0
+                    if(Choose == D):
+                        D = 1
+                    else:
+                        D = 0
+                    column.append([Choose,[U,L,D]]) #[Value,[U,L,D]]  
+        row.append(column)
+    return row
 #============================= 
     
     
@@ -92,11 +122,15 @@ def main(argv):
         if (sys.argv[6].upper() == 'G'):
             Result = gsa(Seq1,Seq2,Match,Mismatch,Gap)
             for i in range(0,len(Seq1)+1):
-                print(Result[i])
+                for j in range(0,len(Seq2)+1):
+                    print(Result[i][j])
+                print("----------------")
         elif (sys.argv[6].upper() == 'L'):
             Result = lsa(Seq1,Seq2,Match,Mismatch,Gap)
             for i in range(0,len(Seq1)+1):
-                print(Result[i])
+                for j in range(0,len(Seq2)+1):
+                    print(Result[i][j])
+                print("----------------")
         else:
             print("error: Mode must be 'G' or 'L'\n")
             exit()
