@@ -72,6 +72,37 @@ def lsa(Seq1,Seq2,Match,Mismatch,Gap): #Local Sequence Alignment
                     column.append([Choose,[U,L,D]]) #[Value,[U,L,D]]  
         row.append(column)
     return row
+
+def displayResult(Source,Seq1,Seq2):
+    Seq1 = "-"+(Seq1)
+    Seq2 = "-"+(Seq2)
+    Row = len(Seq1)
+    Column = len(Seq2)
+    Row1 = " "
+    
+    for j in range(0,Column):
+        Row1 = Row1 + Seq2[j].rjust(5,' ')
+    print(Row1)
+    for i in range(0,Row):
+        Result = Seq1[i]
+        UpRow = " "
+        for j in range(0,Column):
+            if(Source[i][j][1][1] == 1):
+                direct = "->"
+            else:
+                direct = "  "
+            Result = Result +direct+ str(Source[i][j][0]).rjust(3,' ')
+            if (Source[i][j][1][2] == 1):
+                diColumn = "\ "
+            else:
+                diColumn = "  "
+            if (Source[i][j][1][0] == 1):
+                UpRow = UpRow + diColumn + "|".rjust(3,' ')
+            else:
+                UpRow = UpRow + diColumn + " ".rjust(3,' ')
+        print(UpRow)
+        print(Result)      
+    return 0
 #============================= 
     
     
@@ -118,19 +149,12 @@ def main(argv):
         except ValueError:
             print("error: Gap must be numeric\n")
             exit()
-            
         if (sys.argv[6].upper() == 'G'):
             Result = gsa(Seq1,Seq2,Match,Mismatch,Gap)
-            for i in range(0,len(Seq1)+1):
-                for j in range(0,len(Seq2)+1):
-                    print(Result[i][j])
-                print("----------------")
+            displayResult(Result,Seq1,Seq2)
         elif (sys.argv[6].upper() == 'L'):
             Result = lsa(Seq1,Seq2,Match,Mismatch,Gap)
-            for i in range(0,len(Seq1)+1):
-                for j in range(0,len(Seq2)+1):
-                    print(Result[i][j])
-                print("----------------")
+            displayResult(Result,Seq1,Seq2)
         else:
             print("error: Mode must be 'G' or 'L'\n")
             exit()
