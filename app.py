@@ -8,11 +8,11 @@ def gsa(Seq1,Seq2,Match,Mismatch,Gap): #Global Sequence Alignment
         for j in range(0,(len(Seq2)+1)):
             if(i == 0):
                 if(j == 0):
-                    column.append([j*-1,[0,0,0]]) #[Value,[U,L,D]]
+                    column.append([j*Gap,[0,0,0]]) #[Value,[U,L,D]]
                 else:
-                    column.append([j*-1,[0,1,0]]) #[Value,[U,L,D]]
+                    column.append([j*Gap,[0,1,0]]) #[Value,[U,L,D]]
             elif(j == 0):
-                column.append([i*-1,[1,0,0]]) #[Value,[U,L,D]]
+                column.append([i*Gap,[1,0,0]]) #[Value,[U,L,D]]
             else:
                 U = row[i-1][j][0]+Gap
                 L = column[j-1][0]+Gap
@@ -81,23 +81,23 @@ def displayResult(Source,Seq1,Seq2):
     Row1 = " "
     
     for j in range(0,Column):
-        Row1 = Row1 + Seq2[j].rjust(5,' ')
+        Row1 = Row1 + Seq2[j].rjust(4,' ')
     print(Row1)
     for i in range(0,Row):
         Result = Seq1[i]
         UpRow = " "
         for j in range(0,Column):
             if(Source[i][j][1][1] == 1):
-                direct = "->"
+                direct = "←"
             else:
-                direct = "  "
+                direct = " "
             Result = Result +direct+ str(Source[i][j][0]).rjust(3,' ')
             if (Source[i][j][1][2] == 1):
-                diColumn = "\ "
+                diColumn = "↖"
             else:
-                diColumn = "  "
+                diColumn = " "
             if (Source[i][j][1][0] == 1):
-                UpRow = UpRow + diColumn + "|".rjust(3,' ')
+                UpRow = UpRow + diColumn + "↑".rjust(3,' ')
             else:
                 UpRow = UpRow + diColumn + " ".rjust(3,' ')
         print(UpRow)
