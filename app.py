@@ -73,6 +73,9 @@ def lsa(Seq1,Seq2,Match,Mismatch,Gap): #Local Sequence Alignment
         row.append(column)
     return row
 
+def findSequencesAlignment():
+    return 0
+
 def displayResult(Source,Seq1,Seq2):
     Seq1 = "-"+(Seq1)
     Seq2 = "-"+(Seq2)
