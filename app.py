@@ -162,25 +162,26 @@ def findSequencesAlignmentL(Source,Seq1,Seq2):
                 maxIndex.append([i,j])
 
     #print(maxVar,maxIndex)
-
-    sumDirect = []
     answerCount = 1
-    while True:
-
+    for i in range(0,len(maxIndex)):
         sumDirect = []
-        ResultStr1 = []
-        ResultStr2 = []
+        while True:
 
-        printLCSL(Source,Seq1,Seq2,maxIndex[0][0],maxIndex[0][1],ResultStr1,ResultStr2,sumDirect)
-        print("Answer No. " + str(answerCount))
-        print("Optimal Sequence 1 : "+''.join(ResultStr1))
-        print("Optimal Sequence 2 : "+''.join(ResultStr2))
-        #print(sumDirect)
-        print("------------------------------------")
+            sumDirect = []
+            ResultStr1 = []
+            ResultStr2 = []
 
-        if (all(item == 1 for item in sumDirect)):
-            break
+            printLCSL(Source,Seq1,Seq2,maxIndex[0][0],maxIndex[0][1],ResultStr1,ResultStr2,sumDirect)
+            print("Answer No. " + str(answerCount))
+            print("Optimal Sequence 1 : "+''.join(ResultStr1))
+            print("Optimal Sequence 2 : "+''.join(ResultStr2))
+            #print(sumDirect)
+            print("------------------------------------")
+
+            if (all(item == 1 for item in sumDirect)):
+                break
         answerCount += 1
+
     return 0
 
 def printLCSL(b,v,w,i,j,ResultStr1,ResultStr2,sumDirect):
