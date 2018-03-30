@@ -73,7 +73,165 @@ def lsa(Seq1,Seq2,Match,Mismatch,Gap): #Local Sequence Alignment
         row.append(column)
     return row
 
-def findSequencesAlignment():
+def findSequencesAlignmentG(Source,Seq1,Seq2):
+    Row = len(Seq1)
+    Column = len(Seq2)
+    sumDirect = []
+    answerCount = 1
+    while True:
+
+        sumDirect = []
+        ResultStr1 = []
+        ResultStr2 = []  
+
+        printLCSG(Source,Seq1,Seq2,Row,Column,ResultStr1,ResultStr2,sumDirect)
+        print("Answer No. " + str(answerCount))
+        print("Optimal Sequence 1 : "+''.join(ResultStr1))
+        print("Optimal Sequence 2 : "+''.join(ResultStr2))
+        #print(sumDirect)
+        print("------------------------------------")
+
+        if (all(item == 1 for item in sumDirect)):
+            break
+        answerCount += 1
+    return 0
+
+def printLCSG(b,v,w,i,j,ResultStr1,ResultStr2,sumDirect):
+    if (i == 0 or j == 0):
+        if (b[i][j][1][2] == 1):
+            #print(i,j,b[i][j][1],v[i-1])
+            ResultStr1.append(v[i-1])
+            ResultStr2.append(w[j-1])
+            
+        else:
+            if (b[i][j][1][0] == 1):
+                #print(i,j,b[i][j][1],"-")
+                ResultStr1.append(v[i-1])
+                ResultStr2.append("-")
+                
+            else:
+                #print(i,j,b[i][j][1],"-")
+                ResultStr1.append("-")
+                ResultStr2.append(w[j-1])
+                
+        return 0
+
+    if (b[i][j][1][2] == 1):
+        printLCSG(b,v,w,i-1,j-1,ResultStr1,ResultStr2,sumDirect)
+        #print(i,j,b[i][j][1],v[i-1])
+        ResultStr1.append(v[i-1])
+        ResultStr2.append(w[j-1])
+        sumDirect.append(sum(b[i][j][1]))
+
+        if ( sum(b[i][j][1]) !=1 ):
+            b[i][j][1][2] = 0
+    else:
+        if (b[i][j][1][0] == 1):
+            printLCSG(b,v,w,i-1,j,ResultStr1,ResultStr2,sumDirect)
+            #print(i,j,b[i][j][1],"-")
+            ResultStr1.append(v[i-1])
+            ResultStr2.append("-")
+            sumDirect.append(sum(b[i][j][1]))
+            
+            if ( sum(b[i][j][1]) !=1 ):
+                b[i][j][1][0] = 0
+        else:          
+            printLCSG(b,v,w,i,j-1,ResultStr1,ResultStr2,sumDirect)
+            #print(i,j,b[i][j][1],"-")
+            ResultStr1.append("-")
+            ResultStr2.append(w[j-1])
+            sumDirect.append(sum(b[i][j][1]))
+            
+            if ( sum(b[i][j][1]) !=1 ):
+                b[i][j][1][1] = 0
+    return 0
+
+def findSequencesAlignmentL(Source,Seq1,Seq2):
+    Row = len(Seq1)
+    Column = len(Seq2)
+    maxIndex = []
+    maxVar = 0
+    for i in range(0,(Row+1)):
+        for j in range(0,(Column+1)):
+            if ( maxVar < Source[i][j][0] ):
+                maxVar = Source[i][j][0]
+
+    for i in range(0,(Row+1)):
+        for j in range(0,(Column+1)):
+            if ( maxVar == Source[i][j][0] ):
+                maxIndex.append([i,j])
+
+    #print(maxVar,maxIndex)
+    answerCount = 1
+    for i in range(0,len(maxIndex)):
+        sumDirect = []
+        while True:
+
+            sumDirect = []
+            ResultStr1 = []
+            ResultStr2 = []
+
+            printLCSL(Source,Seq1,Seq2,maxIndex[0][0],maxIndex[0][1],ResultStr1,ResultStr2,sumDirect)
+            print("Answer No. " + str(answerCount))
+            print("Optimal Sequence 1 : "+''.join(ResultStr1))
+            print("Optimal Sequence 2 : "+''.join(ResultStr2))
+            #print(sumDirect)
+            print("------------------------------------")
+
+            if (all(item == 1 for item in sumDirect)):
+                break
+        answerCount += 1
+
+    return 0
+
+def printLCSL(b,v,w,i,j,ResultStr1,ResultStr2,sumDirect):
+    if (b[i][j][0] == 0):
+        #if (b[i][j][1][2] == 1):
+            #print(i,j,b[i][j][1],v[i-1])
+            #ResultStr1.append(v[i-1])
+            #ResultStr2.append(w[j-1])
+            
+        #else:
+            #if (b[i][j][1][0] == 1):
+                #print(i,j,b[i][j][1],"-")
+                #ResultStr1.append(v[i-1])
+                #ResultStr2.append("-")
+                
+            #else:
+                #print(i,j,b[i][j][1],"-")
+                #ResultStr1.append("-")
+                #ResultStr2.append(w[j-1])
+                
+        return 0
+
+    if (b[i][j][1][2] == 1):
+        printLCSL(b,v,w,i-1,j-1,ResultStr1,ResultStr2,sumDirect)
+        #print(i,j,b[i][j][1],v[i-1])
+        ResultStr1.append(v[i-1])
+        ResultStr2.append(w[j-1])
+        sumDirect.append(sum(b[i][j][1]))
+
+        if ( sum(b[i][j][1]) !=1 ):
+            b[i][j][1][2] = 0
+    else:
+        if (b[i][j][1][0] == 1):
+            printLCSL(b,v,w,i-1,j,ResultStr1,ResultStr2,sumDirect)
+            #print(i,j,b[i][j][1],"-")
+            ResultStr1.append(v[i-1])
+            ResultStr2.append("-")
+            sumDirect.append(sum(b[i][j][1]))
+            
+            if ( sum(b[i][j][1]) !=1 ):
+                b[i][j][1][0] = 0
+        else:          
+            printLCSL(b,v,w,i,j-1,ResultStr1,ResultStr2,sumDirect)
+            #print(i,j,b[i][j][1],"-")
+            ResultStr1.append("-")
+            ResultStr2.append(w[j-1])
+            sumDirect.append(sum(b[i][j][1]))
+            
+            if ( sum(b[i][j][1]) !=1 ):
+                b[i][j][1][1] = 0
     return 0
 
 def displayResult(Source,Seq1,Seq2):
@@ -155,12 +313,16 @@ def main(argv):
         if (sys.argv[6].upper() == 'G'):
             Result = gsa(Seq1,Seq2,Match,Mismatch,Gap)
             displayResult(Result,Seq1,Seq2)
+            print("====================================")
+            findSequencesAlignmentG(Result,Seq1,Seq2)
         elif (sys.argv[6].upper() == 'L'):
             Result = lsa(Seq1,Seq2,Match,Mismatch,Gap)
             displayResult(Result,Seq1,Seq2)
+            print("====================================")
+            findSequencesAlignmentL(Result,Seq1,Seq2)
         else:
             print("error: Mode must be 'G' or 'L'\n")
-            exit()
+            exit()  
     else:
         
         print("usage: python app.py [input sequence file1] [input sequence file2] [Match] [Mismatch] [Gap] [Mode].\nPlease, Try again.\n")
