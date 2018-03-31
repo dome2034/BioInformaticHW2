@@ -88,7 +88,6 @@ def findSequencesAlignmentG(Source,Seq1,Seq2):
         print("Answer No. " + str(answerCount))
         print("Optimal Sequence 1 : "+''.join(ResultStr1))
         print("Optimal Sequence 2 : "+''.join(ResultStr2))
-        #print(sumDirect)
         print("------------------------------------")
 
         if (all(item == 1 for item in sumDirect)):
@@ -99,51 +98,33 @@ def findSequencesAlignmentG(Source,Seq1,Seq2):
 def printLCSG(b,v,w,i,j,ResultStr1,ResultStr2,sumDirect):
     if (i == 0 or j == 0):
         if (b[i][j][1][2] == 1):
-            #print(i,j,b[i][j][1],v[i-1])
             ResultStr1.append(v[i-1])
             ResultStr2.append(w[j-1])
-            
-        else:
-            if (b[i][j][1][0] == 1):
-                #print(i,j,b[i][j][1],"-")
-                ResultStr1.append(v[i-1])
-                ResultStr2.append("-")
-                
-            else:
-                #print(i,j,b[i][j][1],"-")
-                ResultStr1.append("-")
-                ResultStr2.append(w[j-1])
-                
+    
         return 0
 
-    if (b[i][j][1][2] == 1):
+    if (b[i][j][1][0] == 1):
+        printLCSG(b,v,w,i-1,j,ResultStr1,ResultStr2,sumDirect)
+        ResultStr1.append(v[i-1])
+        ResultStr2.append("-")
+        sumDirect.append(sum(b[i][j][1]))
+        
+        if ( sum(b[i][j][1]) !=1 ):
+            b[i][j][1][0] = 0
+    elif (b[i][j][1][1] == 1):
+        printLCSG(b,v,w,i,j-1,ResultStr1,ResultStr2,sumDirect)
+        ResultStr1.append("-")
+        ResultStr2.append(w[j-1])
+        sumDirect.append(sum(b[i][j][1]))
+        
+        if ( sum(b[i][j][1]) !=1 ):
+            b[i][j][1][1] = 0
+
+    else:          
         printLCSG(b,v,w,i-1,j-1,ResultStr1,ResultStr2,sumDirect)
-        #print(i,j,b[i][j][1],v[i-1])
         ResultStr1.append(v[i-1])
         ResultStr2.append(w[j-1])
         sumDirect.append(sum(b[i][j][1]))
-
-        if ( sum(b[i][j][1]) !=1 ):
-            b[i][j][1][2] = 0
-    else:
-        if (b[i][j][1][0] == 1):
-            printLCSG(b,v,w,i-1,j,ResultStr1,ResultStr2,sumDirect)
-            #print(i,j,b[i][j][1],"-")
-            ResultStr1.append(v[i-1])
-            ResultStr2.append("-")
-            sumDirect.append(sum(b[i][j][1]))
-            
-            if ( sum(b[i][j][1]) !=1 ):
-                b[i][j][1][0] = 0
-        else:          
-            printLCSG(b,v,w,i,j-1,ResultStr1,ResultStr2,sumDirect)
-            #print(i,j,b[i][j][1],"-")
-            ResultStr1.append("-")
-            ResultStr2.append(w[j-1])
-            sumDirect.append(sum(b[i][j][1]))
-            
-            if ( sum(b[i][j][1]) !=1 ):
-                b[i][j][1][1] = 0
     return 0
 
 def findSequencesAlignmentL(Source,Seq1,Seq2):
@@ -161,7 +142,6 @@ def findSequencesAlignmentL(Source,Seq1,Seq2):
             if ( maxVar == Source[i][j][0] ):
                 maxIndex.append([i,j])
 
-    #print(maxVar,maxIndex)
     answerCount = 1
     for i in range(0,len(maxIndex)):
         sumDirect = []
@@ -170,12 +150,10 @@ def findSequencesAlignmentL(Source,Seq1,Seq2):
             sumDirect = []
             ResultStr1 = []
             ResultStr2 = []
-
-            printLCSL(Source,Seq1,Seq2,maxIndex[0][0],maxIndex[0][1],ResultStr1,ResultStr2,sumDirect)
+            printLCSL(Source,Seq1,Seq2,maxIndex[i][0],maxIndex[i][1],ResultStr1,ResultStr2,sumDirect)
             print("Answer No. " + str(answerCount))
             print("Optimal Sequence 1 : "+''.join(ResultStr1))
             print("Optimal Sequence 2 : "+''.join(ResultStr2))
-            #print(sumDirect)
             print("------------------------------------")
 
             if (all(item == 1 for item in sumDirect)):
@@ -185,53 +163,38 @@ def findSequencesAlignmentL(Source,Seq1,Seq2):
     return 0
 
 def printLCSL(b,v,w,i,j,ResultStr1,ResultStr2,sumDirect):
+    
     if (b[i][j][0] == 0):
-        #if (b[i][j][1][2] == 1):
-            #print(i,j,b[i][j][1],v[i-1])
-            #ResultStr1.append(v[i-1])
-            #ResultStr2.append(w[j-1])
-            
-        #else:
-            #if (b[i][j][1][0] == 1):
-                #print(i,j,b[i][j][1],"-")
-                #ResultStr1.append(v[i-1])
-                #ResultStr2.append("-")
-                
-            #else:
-                #print(i,j,b[i][j][1],"-")
-                #ResultStr1.append("-")
-                #ResultStr2.append(w[j-1])
-                
+        if (b[i][j][1][2] == 1):
+            print(i,j,b[i][j][1],v[i-1])
+            ResultStr1.append(v[i-1])
+            ResultStr2.append(w[j-1])
+
         return 0
 
-    if (b[i][j][1][2] == 1):
+    if (b[i][j][1][0] == 1):
+        printLCSL(b,v,w,i-1,j,ResultStr1,ResultStr2,sumDirect)
+        ResultStr1.append(v[i-1])
+        ResultStr2.append("-")
+        sumDirect.append(sum(b[i][j][1]))
+        
+        if ( sum(b[i][j][1]) !=1 ):
+            b[i][j][1][0] = 0
+
+    elif (b[i][j][1][1] == 1):
+        printLCSL(b,v,w,i,j-1,ResultStr1,ResultStr2,sumDirect)
+        ResultStr1.append("-")
+        ResultStr2.append(w[j-1])
+        sumDirect.append(sum(b[i][j][1]))
+        
+        if ( sum(b[i][j][1]) !=1 ):
+            b[i][j][1][1] = 0
+    else:
         printLCSL(b,v,w,i-1,j-1,ResultStr1,ResultStr2,sumDirect)
-        #print(i,j,b[i][j][1],v[i-1])
         ResultStr1.append(v[i-1])
         ResultStr2.append(w[j-1])
         sumDirect.append(sum(b[i][j][1]))
 
-        if ( sum(b[i][j][1]) !=1 ):
-            b[i][j][1][2] = 0
-    else:
-        if (b[i][j][1][0] == 1):
-            printLCSL(b,v,w,i-1,j,ResultStr1,ResultStr2,sumDirect)
-            #print(i,j,b[i][j][1],"-")
-            ResultStr1.append(v[i-1])
-            ResultStr2.append("-")
-            sumDirect.append(sum(b[i][j][1]))
-            
-            if ( sum(b[i][j][1]) !=1 ):
-                b[i][j][1][0] = 0
-        else:          
-            printLCSL(b,v,w,i,j-1,ResultStr1,ResultStr2,sumDirect)
-            #print(i,j,b[i][j][1],"-")
-            ResultStr1.append("-")
-            ResultStr2.append(w[j-1])
-            sumDirect.append(sum(b[i][j][1]))
-            
-            if ( sum(b[i][j][1]) !=1 ):
-                b[i][j][1][1] = 0
     return 0
 
 def displayResult(Source,Seq1,Seq2):
